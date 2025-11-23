@@ -1,0 +1,48 @@
+!pip install scikit-fuzzy
+
+import numpy as np
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+
+#Step 1: Create fuzzy variables
+service = ctrl.Antecedent(np.arange(0,11,1), 'service')
+food = ctrl.Antecedent(np.arange(0,11,1), 'food')
+tip = ctrl.Consequent(np.arange(0,26,1), 'tip')
+
+#Step 2: Define Membership functions
+
+#Service Quality
+service['poor']=fuzz.trimf(service.universe, [0,0,5])
+service['average']=fuzz.trimf(service.universe, [0,5,10])
+service['good']=fuzz.trimf(service.universe, [5,10,10])
+
+#Food quality
+food['bad']=fuzz.trimf(food.universe, [0,0,5])
+food['ok']=fuzz.trimf(food.universe, [0,5,10])
+food['delicious']=fuzz.trimf(food.universe, [5,10,10])
+
+#Tip percentage
+tip['low']=fuzz.trimf(tip.universe, [0,0,13])
+tip['medium']=fuzz.trimf(tip.universe, [0,13,25])
+tip['high']=fuzz.trimf(tip.universe, [13,25,25])
+
+#Step 3: Define Rules
+rule1 = ctrl.Rule(service['poor'] | food['bad'], tip['low'])
+rule2 = ctrl.Rule(service['average'], tip['medium'])
+rule3 = ctrl.Rule(service['good'] | food['delicious'], tip['high'])
+
+#Step 4: Create control system
+tipping_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
+tipping=ctrl.ControlSystemSimulation(tipping_ctrl)
+
+#Step 5: Get user input
+srv=float(input("Rate service (0-10): "))
+fd=float(input("Rate food (0-10): "))
+
+tipping.input['service']=srv
+tipping.input['food']=fd
+
+#Step 6: Compute fuzzy result
+tipping.compute()
+
+print("\nRecommended Tip Percentage = {:.2f}%".format(tipping.output['tip']))

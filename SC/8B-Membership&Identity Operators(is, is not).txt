@@ -1,0 +1,10 @@
+#Program to demonstrate Membership Operators(is, is not)
+x = [10,20,30]
+y = [10,20,30]
+
+z = x # z refers to the same object as x
+
+print("x==y:",x==y)         #True: values are equal
+print("x is y:",x is y)     #False: different memory locations
+print("x is z:",x is z)     #True: same memory location
+print("x is not y:", x is not y)

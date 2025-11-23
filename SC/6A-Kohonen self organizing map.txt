@@ -1,0 +1,55 @@
+import numpy as np
+import matplotlib.pyplot as plt
+#Step 1: Create simple 2D data points
+#We'll create two groups of points to see if SOM can separate them.
+data=np.array([
+    [0.2,0.8],[0.3,0.7],[0.25,0.85],#Group 1
+    [0.8,0.2],[0.7,0.3],[0.9,0.1],#Group 2
+    [0.6,0.75],[0.65,0.8],[0.55,0.7]#Mixed group
+])
+#Step 2:Initialize the SOM
+#We'll use a 5x5 grid of neurons(eah neuron has 2 weights)
+rows,cols=5,5
+input_dim=2
+learning_rate=0.5
+
+#Randomly assign weights to each neuron
+weights=np.random.rand(rows,cols,input_dim)
+
+#Step 3:Define a function to find the best matching unit(BMU)
+def find_bmu(x):
+  #Calculate the euciledian distance between input x and all neuron weights
+  distances=np.linalg.norm(weights-x,axis=2)
+  #Return the index(row,col)of the neuron with the smallest distance
+  return np.unravel_index(np.argmin(distances),(rows,cols))
+
+#Step 4:Train the som
+#We'll run several epochs so neurons can adjust to the data
+for epoch in range(200):
+  for x in data:
+    r,c=find_bmu(x)
+    #Update the BMU weights(move them closer to the input)
+    weights[r,c]+=learning_rate*(x-weights[r,c])
+
+#Step 5: Display the results
+print("Training complete!\n")
+
+print("Data point-> Best matching Unit (BMU) location:")
+for x in data:
+  print(f"{x} ->--{find_bmu(x)}")
+#Optional: Visualize the SOM grid and data
+plt.figure(figsize=(6,6))
+plt.title("Kohonen Self-Organizing Map")
+plt.scatter(data[:,0], data[:,1],c='red',label='Input Data')
+
+#Plot neuron weights as blue squares
+for i in range(rows):
+  for j in range(cols):
+    w=weights[i,j]
+    plt.scatter(w[0],w[1],c='blue',marker='s')
+
+plt.legend()
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.grid(True)
+plt.show()
