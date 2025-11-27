@@ -1,7 +1,4 @@
-#Fuzzy Logic Ratio Finder
-
 def fuzzy_small(x):
-  """Membership function for SMALL numbers."""
   if x <= 20:
     return 1
   elif 20 < x <= 40:
@@ -11,7 +8,6 @@ def fuzzy_small(x):
 
 
 def fuzzy_medium(x):
-  """Membership function for MEDIUM numbers"""
   if 20 < x <= 40:
     return(x-20)/20
   elif 40 < x <= 60:
@@ -20,7 +16,6 @@ def fuzzy_medium(x):
     return 0
 
 def fuzzy_large(x):
-  """Membership function for LARGE numbers."""
   if x <= 40:
     return 0
   elif 40 < x <= 60:
@@ -29,9 +24,7 @@ def fuzzy_large(x):
     return 1
 
 def fuzzy_ratio(a,b):
-  """Calculate fuzzy ratio based on fuzzy weights."""
   fuzzy_a = fuzzy_medium(a)+fuzzy_large(a)
-
   fuzzy_b = fuzzy_medium(b)+fuzzy_large(b)
 
   if fuzzy_b==0:
@@ -39,12 +32,9 @@ def fuzzy_ratio(a,b):
 
   return fuzzy_a/fuzzy_b
 
-
-#Main Program
 print("===Fuzzy Ratio Calculator===")
 
 a=float(input("Enter first value:"))
-
 b=float(input("Enter second value:"))
 
 ratio = fuzzy_ratio(a,b)
